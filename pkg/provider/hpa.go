@@ -3,6 +3,7 @@ package provider
 import (
 	"context"
 	"errors"
+	"fmt"
 	"reflect"
 	"sync"
 	"time"
@@ -263,6 +264,7 @@ func (p *HPAProvider) collectMetrics(ctx context.Context) {
 
 // GetMetricByName gets a single metric by name.
 func (p *HPAProvider) GetMetricByName(name types.NamespacedName, info provider.CustomMetricInfo, metricSelector labels.Selector) (*custom_metrics.MetricValue, error) {
+	fmt.Printf("GetMetricByName: name: %s, info: %s, labels: %s\n", name, info, metricSelector)
 	metric := p.metricStore.GetMetricsByName(name, info)
 	if metric == nil {
 		return nil, provider.NewMetricNotFoundForError(info.GroupResource, info.Metric, name.Name)
@@ -273,19 +275,23 @@ func (p *HPAProvider) GetMetricByName(name types.NamespacedName, info provider.C
 // GetMetricBySelector returns metrics for namespaced resources by
 // label selector.
 func (p *HPAProvider) GetMetricBySelector(namespace string, selector labels.Selector, info provider.CustomMetricInfo, metricSelector labels.Selector) (*custom_metrics.MetricValueList, error) {
+	fmt.Printf("GetMetricBySelector: namespace: %s, selector: %s, info: %s, labels: %s\n", namespace, selector, info, metricSelector)
 	return p.metricStore.GetMetricsBySelector(namespace, selector, info), nil
 }
 
 // ListAllMetrics list all available metrics from the provicer.
 func (p *HPAProvider) ListAllMetrics() []provider.CustomMetricInfo {
+	fmt.Println("ListAllMetrics")
 	return p.metricStore.ListAllMetrics()
 }
 
 func (p *HPAProvider) GetExternalMetric(namespace string, metricSelector labels.Selector, info provider.ExternalMetricInfo) (*external_metrics.ExternalMetricValueList, error) {
+	fmt.Printf("GetExternalMetric: namespace: %s, metricSelector: %s, info: %s\n", namespace, metricSelector, info)
 	return p.metricStore.GetExternalMetric(namespace, metricSelector, info)
 }
 
 func (p *HPAProvider) ListAllExternalMetrics() []provider.ExternalMetricInfo {
+	fmt.Println("ListAllExternalMetrics")
 	return p.metricStore.ListAllExternalMetrics()
 }
 
