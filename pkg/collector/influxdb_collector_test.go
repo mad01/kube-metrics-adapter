@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"k8s.io/api/autoscaling/v2beta2"
+	autoscaling "k8s.io/api/autoscaling/v2beta2"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
@@ -32,7 +33,10 @@ func TestInfluxDBCollector_New(t *testing.T) {
 				"query-name": "range2m",
 			},
 		}
-		c, err := NewInfluxDBCollector("http://localhost:9999", "secret", "deadbeef", m, time.Second)
+
+		hpa := &autoscaling.HorizontalPodAutoscaler{}
+
+		c, err := NewInfluxDBCollector(hpa, "http://localhost:9999", "secret", "deadbeef", m, time.Second)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -73,7 +77,8 @@ func TestInfluxDBCollector_New(t *testing.T) {
 				"query-name": "range3m",
 			},
 		}
-		c, err := NewInfluxDBCollector("http://localhost:8888", "secret", "deadbeef", m, time.Second)
+		hpa := &autoscaling.HorizontalPodAutoscaler{}
+		c, err := NewInfluxDBCollector(hpa, "http://localhost:8888", "secret", "deadbeef", m, time.Second)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
@@ -143,7 +148,8 @@ func TestInfluxDBCollector_New(t *testing.T) {
 				CollectorType:  "influxdb",
 				Config:         tc.config,
 			}
-			_, err := NewInfluxDBCollector("http://localhost:9999", "secret", "deadbeef", m, time.Second)
+			hpa := &autoscaling.HorizontalPodAutoscaler{}
+			_, err := NewInfluxDBCollector(hpa, "http://localhost:9999", "secret", "deadbeef", m, time.Second)
 			if err == nil {
 				t.Fatal("expected error got none")
 			}

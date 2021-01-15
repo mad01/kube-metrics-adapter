@@ -115,7 +115,8 @@ func TestZMONCollectorGetMetrics(tt *testing.T) {
 				dataPoints: ti.dataPoints,
 			}
 
-			zmonCollector, err := NewZMONCollector(z, config, 1*time.Second)
+			hpa := &autoscalingv2.HorizontalPodAutoscaler{}
+			zmonCollector, err := NewZMONCollector(z, hpa, config, 1*time.Second)
 			require.NoError(t, err)
 
 			metrics, _ := zmonCollector.GetMetrics()
